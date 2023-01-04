@@ -2,15 +2,13 @@ import { createReducer } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import phonebookActions from './phonebook-actions';
 
-const defaultContacts = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-];
+const filter = createReducer('', builder => {
+  builder.addCase(phonebookActions.filterByName, (_, { payload }) => payload);
+});
 
-const contacts = createReducer(defaultContacts, builder => {
+const contacts = createReducer([], builder => {
   builder
+    .addCase(phonebookActions.fetchContactsSuccess, (_, { payload }) => payload)
     .addCase(phonebookActions.addNewContact, (state, { payload }) => [
       ...state,
       payload,
@@ -20,10 +18,24 @@ const contacts = createReducer(defaultContacts, builder => {
     );
 });
 
-const filter = createReducer('', builder => {
-  builder.addCase(phonebookActions.filterByName, (_, { payload }) => payload);
+const testIsLoading = createReducer(false, builder => {
+  builder.addCase(phonebookActions.fetchContactsRequest, () => true);
+  builder.addCase(phonebookActions.fetchContactsSuccess, () => false);
+  builder.addCase(phonebookActions.fetchContactsError, () => false);
+});
+const testError = createReducer(null, builder => {
+  builder.addCase(
+    phonebookActions.fetchContactsError,
+    (_, { payload }) => payload
+  );
 });
 
-const phonebookReducer = combineReducers({ contacts, filter });
+const phonebookReducer = combineReducers({
+  filter,
+  contacts,
+
+  testIsLoading,
+  testError,
+});
 
 export default phonebookReducer;

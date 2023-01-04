@@ -17,7 +17,6 @@ import storage from 'redux-persist/lib/storage';
 import logger from 'redux-logger';
 
 import phonebookReducer from './phonebook/phonebook-reducer';
-import counterReducer from './counter/counter-reducer';
 
 const middleware = [
   ...getDefaultMiddleware({
@@ -25,7 +24,7 @@ const middleware = [
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
   }),
-  logger,
+  // logger,
 ];
 
 const persistConfig = {
@@ -35,7 +34,6 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  counter: counterReducer,
   phonebook: persistReducer(persistConfig, phonebookReducer),
 });
 

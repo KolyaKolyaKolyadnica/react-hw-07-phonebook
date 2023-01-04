@@ -1,21 +1,22 @@
 import { createAction } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid';
-
-const addNewContact = createAction(
-  'phonebook/addNewContact',
-  ({ name, number }) => ({
-    payload: {
-      id: nanoid(),
-      name,
-      number,
-    },
-  })
-);
-
-const deleteContact = createAction('phonebook/deleteContact');
 
 const filterByName = createAction('phonebook/filterByName');
 
-const phonebookActions = { addNewContact, deleteContact, filterByName };
+const fetchContactsRequest = createAction('phonebook/fetchContactsRequest');
+const fetchContactsSuccess = createAction('phonebook/fetchContactsSuccess');
+const fetchContactsError = createAction('phonebook/fetchContactsError');
 
+const addNewContact = createAction('phonebook/addNewContact');
+const deleteContact = createAction('phonebook/deleteContact');
+
+const phonebookActions = {
+  filterByName,
+
+  fetchContactsRequest,
+  fetchContactsSuccess,
+  fetchContactsError,
+
+  addNewContact,
+  deleteContact,
+};
 export default phonebookActions;
