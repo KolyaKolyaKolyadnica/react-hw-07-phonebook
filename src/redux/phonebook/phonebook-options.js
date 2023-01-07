@@ -1,49 +1,44 @@
-import phonebookActions from './phonebook-actions';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-export const getContacts = () => async dispatch => {
-  dispatch(phonebookActions.fetchContactsRequest());
+const URL = 'https://63b432e99f50390584a9cbcd.mockapi.io/contacts';
 
-  try {
-    const response = await fetch(
-      'https://63b432e99f50390584a9cbcd.mockapi.io/contacts'
-    );
+export const getContacts = createAsyncThunk(
+  'contacts/getContacts',
+  async () => {
+    const response = await fetch(URL);
     const contacts = await response.json();
-
-    dispatch(phonebookActions.fetchContactsSuccess(contacts));
-  } catch (error) {
-    dispatch(phonebookActions.fetchContactsError(error.message));
+    return contacts;
   }
-};
+);
 
-export const postContact = text => async dispatch => {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(text),
-  };
+export const postContact = createAsyncThunk(
+  'contacts/postContacts',
+  async newContact => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newContact),
+    };
 
-  const response = await fetch(
-    'https://63b432e99f50390584a9cbcd.mockapi.io/contacts',
-    options
-  );
-  const contact = await response.json();
+    const response = await fetch(URL, options);
+    const contact = await response.json();
+    return contact;
+  }
+);
 
-  dispatch(phonebookActions.addNewContact(contact));
-};
+export const deleteContact = createAsyncThunk(
+  'contacts/deleteContact',
 
-export const deleteContact = contactId => {
-  return async function (dispatch) {
+  async contactId => {
     const options = {
       method: 'DELETE',
     };
 
-    await fetch(
-      `https://63b432e99f50390584a9cbcd.mockapi.io/contacts/${contactId}`,
-      options
-    );
+    const response = await fetch(`${URL}/${contactId}`, options);
+    const contact = await response.json();
 
-    dispatch(phonebookActions.deleteContact(contactId));
-  };
-};
+    return contact;
+  }
+);
